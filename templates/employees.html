@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Employees</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body class="dashboard-page">
+
+    <aside class="sidebar">
+        <h2 class="sidebar-logo">EMS</h2>
+        <p class="sidebar-caption">MANAGEMENT</p>
+        <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+        <a href="{{ url_for('employees') }}" class="nav-link active">Employees</a>
+        <a href="{{ url_for('attendance_leave') }}" class="nav-link">Attendance</a>
+        <a href="{{ url_for('reports') }}" class="nav-link">Reports</a>
+        <a href="{{ url_for('logout') }}" class="nav-link logout-link">Logout</a>
+    </aside>
+
+    <main class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <h1>Employee Management</h1>
+                <p>Welcome, {{ name }}. Manage your employee records.</p>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="flash-message">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <section class="employee-form-card">
+            <h2>Add New Employee</h2>
+            <form method="POST" action="{{ url_for('employees') }}"
+                  id="employeeForm" class="employee-form">
+
+                <div class="form-field">
+                    <label for="name">Full Name</label>
+                    <input id="name" name="name" type="text"
+                           placeholder="Employee name" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email"
+                           placeholder="employee@example.com" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="phone">Phone</label>
+                    <input id="phone" name="phone" type="tel"
+                           placeholder="Phone number" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="department">Department</label>
+                    <select id="department" name="department" required>
+                        <option value="">Select department</option>
+                        <option>IT</option>
+                        <option>HR</option>
+                        <option>Finance</option>
+                        <option>Marketing</option>
+                        <option>Sales</option>
+                        <option>Operations</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="salary">Monthly Salary (₹)</label>
+                    <input id="salary" name="salary" type="number"
+                           min="0" step="0.01" placeholder="25000" required>
+                </div>
+
+                <button type="submit" class="primary-btn">Add Employee</button>
+            </form>
+        </section>
+
+        <section class="employee-list-card">
+            <div class="list-heading">
+                <h2>Employee Records</h2>
+                <input type="search" id="employeeSearch"
+                       placeholder="Search employees...">
+            </div>
+
+            <div class="table-wrapper">
+                <table class="employee-table" id="employeeTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>Monthly Salary</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in employees %}
+                        <tr>
+                            <td>{{ employee.name }}</td>
+                            <td>{{ employee.email }}</td>
+                            <td>{{ employee.phone }}</td>
+                            <td>{{ employee.department }}</td>
+                            <td>₹{{ "%.2f"|format(employee.salary) }}</td>
+                            <td class="action-cell">
+                                <button type="button" class="edit-btn"
+                                    data-edit
+                                    data-id="{{ employee._id }}"
+                                    data-name="{{ employee.name }}"
+                                    data-email="{{ employee.email }}"
+                                    data-phone="{{ employee.phone }}"
+                                    data-department="{{ employee.department }}"
+                                    data-salary="{{ employee.salary }}">
+                                    Edit
+                                </button>
+
+                                <form method="POST"
+                                      action="{{ url_for('delete_employee', employee_id=employee._id) }}"
+                                      class="delete-form">
+                                    <button type="submit" class="delete-btn">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="empty-message">
+                                No employees added yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="editDialog" class="edit-dialog">
+        <form id="editForm" method="POST">
+            <h2>Edit Employee</h2>
+
+            <label for="editName">Full Name</label>
+            <input id="editName" name="name" required>
+
+            <label for="editEmail">Email</label>
+            <input id="editEmail" name="email" type="email" required>
+
+            <label for="editPhone">Phone</label>
+            <input id="editPhone" name="phone" required>
+
+            <label for="editDepartment">Department</label>
+            <select id="editDepartment" name="department" required>
+                <option>IT</option>
+                <option>HR</option>
+                <option>Finance</option>
+                <option>Marketing</option>
+                <option>Sales</option>
+                <option>Operations</option>
+            </select>
+
+            <label for="editSalary">Monthly Salary (₹)</label>
+            <input id="editSalary" name="salary" type="number"
+                   min="0" step="0.01" required>
+
+            <div class="dialog-actions">
+                <button type="submit" class="primary-btn">Save Changes</button>
+                <button type="button" id="closeDialog" class="cancel-btn">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+</body>
+</html>

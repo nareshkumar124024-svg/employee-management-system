@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance | EMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+<div class="dashboard-layout">
+
+    <aside class="sidebar">
+        <h2>EMS</h2>
+        <p>MANAGEMENT</p>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('employees') }}">Employees</a>
+            <a href="{{ url_for('attendance_leave') }}" class="active">
+                Attendance
+            </a>
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h1>Attendance Management</h1>
+        <p>Mark and manage employee attendance.</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <section class="stat-card">
+            <h3>Mark Attendance</h3>
+
+            <form method="POST">
+                
+<label for="employee_id">Select Employee</label>
+
+<div class="searchable-dropdown" id="employeeDropdown">
+    <input
+        type="text"
+        id="employeeSearch"
+        placeholder="Search employee name or ID..."
+        autocomplete="off"
+        aria-label="Search employee"
+        required
+    >
+
+    <input type="hidden" name="employee_id" id="employee_id">
+
+    <div id="employeeOptions" class="employee-options">
+        
+
+{% for emp in all_employees %}
+<div
+    class="employee-option"
+    data-id="{{ emp._id }}"
+    data-search="{{ (emp.get('name', '') ~ ' ' ~ emp.get('department', ''))|lower }}"
+>
+    {{ emp.get('name', 'N/A') }}
+    — {{ emp.get('department', 'No Department') }}
+</div>
+{% endfor %}
+
+
+    </div>
+</div>
+
+
+                <label>Date</label>
+                <input type="date" name="attendance_date"
+                       value="{{ today }}" required>
+
+                <label>Status</label>
+                <select name="status" required>
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Late">Late</option>
+                </select>
+
+                <button type="submit">Save Attendance</button>
+            </form>
+        </section>
+
+        <section class="stat-card">
+            <h3>Attendance Records</h3>
+
+            <table class="employee-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr>
+                        <td>
+                            {{ employee_map.get(record.employee_id|string, "Unknown") }}
+                        </td>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.status }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3">No attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+</body>
+</html>

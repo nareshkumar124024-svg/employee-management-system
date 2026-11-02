@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Employee Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <h2>EMS</h2>
+            <nav>
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('employees') }}">Employees</a>
+                <a href="{{ url_for('attendance_leave') }}">Attendance</a>
+                <a href="{{ url_for('reports') }}" class="active">Reports</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h1>Reports & Analytics</h1>
+            <p>Employee management summary</p>
+
+            <section class="stats-grid">
+                <article class="stat-card">
+                    <p>Total Employees</p>
+                    <h2>{{ employees }}</h2>
+                </article>
+
+                <article class="stat-card">
+                    <p>Pending Leaves</p>
+                    <h2>{{ leaves }}</h2>
+                </article>
+            </section>
+            <section class="stats-grid">
+    <!-- Tumhare existing report cards -->
+</section>
+
+<!-- ISI JAGAH PASTE KARO -->
+<section class="stats-grid">
+    <article class="stat-card">
+        <h3>Present Employees</h3>
+        {% for emp in present %}
+            <p>{{ emp.name }} — {{ emp.department }}</p>
+        {% else %}
+            <p>No present employees today.</p>
+        {% endfor %}
+    </article>
+
+    <article class="stat-card">
+        <h3>Absent Employees</h3>
+        {% for emp in absent %}
+            <p>{{ emp.name }} — {{ emp.department }}</p>
+        {% else %}
+            <p>No absent employees today.</p>
+        {% endfor %}
+    </article>
+</section>
+
+<!-- All Employees Section -->
+<section class="report-section">
+    <h2>All Employees</h2>
+
+    <p>
+        Total Employees:
+        <strong>{{ all_employees|length }}</strong>
+    </p>
+
+    {% if all_employees %}
+    <div class="table-container">
+        <table class="employee-table">
+            <thead>
+                <tr>
+                    <th>S.No.</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for emp in all_employees %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ emp.get('name', 'N/A') }}</td>
+                    <td>{{ emp.get('department', 'N/A') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p>No employees found.</p>
+    {% endif %}
+</section>
+
+
+</main>
+        </main>
+    </div>
+</body>
+</html>

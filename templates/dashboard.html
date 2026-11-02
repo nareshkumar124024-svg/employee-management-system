@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+
+<body class="dashboard-page">
+
+    <aside class="sidebar" id="sidebar">
+        <h2 class="sidebar-logo">EMS</h2>
+        <p class="sidebar-caption">MANAGEMENT</p>
+
+        <a href="{{ url_for('dashboard') }}" class="nav-link active">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('employees') }}" class="nav-link">
+            Employees
+        </a>
+
+        <a href="{{ url_for('attendance_leave') }}" class="nav-link">
+            Attendance
+        </a>
+
+        <a href="{{ url_for('reports') }}">Reports</a>
+
+        <a href="{{ url_for('logout') }}" class="nav-link logout-link">
+            Logout
+        </a>
+    </aside>
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-header">
+            <button id="menuToggle"
+                    class="menu-toggle"
+                    aria-label="Toggle menu">
+                ☰
+            </button>
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back, {{ name | default('Admin', true) }}!</p>
+            </div>
+        </header>
+
+        <!-- Dashboard Statistics -->
+        
+<section class="stats-grid">
+    <article class="stat-card">
+        <p>Total Employees</p>
+        <h2>{{ total_employees }}</h2>
+    </article>
+
+    <article class="stat-card">
+        <p>Present Today</p>
+        <h2>{{ present_today }}</h2>
+    </article>
+
+    <article class="stat-card">
+        <p>Absent Today</p>
+        <h2>{{ absent_today }}</h2>
+    </article>
+
+    <article class="stat-card">
+        <p>Late Today</p>
+        <h2>{{ late_today }}</h2>
+    </article>
+</section>
+</body>
+</html>
